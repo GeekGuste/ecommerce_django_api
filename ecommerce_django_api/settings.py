@@ -83,28 +83,17 @@ WSGI_APPLICATION = 'ecommerce_django_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-if 'aau33fxsdumcx' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
-        }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'hochea',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'mysql.connector.django',
-            'NAME': 'hochea',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-            'PORT': '3306',
-        }
-    }
+}
 
 
 # Password validation
@@ -158,3 +147,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STRIPE_API_KEY =  'sk_test_51Kpr85DP9ndu4EFOTqCLn00O0N9U5V5FLyval6cPXhilZxUWnop4ujWv7JmNsxqcFEGwrScGPxuJCDhuk6LIp0QJ00e8oSFWOl'
+
+ADMINS = [('Auguste', 'manouauguste7@gmail.com'), ('Tata Roxane', 'hocheacreation@gmail.com')]
