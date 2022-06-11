@@ -59,6 +59,7 @@ class CategoryTreeSerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id',
                   'label',
+                  'image',
                   'is_active',
                   'enfants')
     
@@ -83,6 +84,7 @@ class CreateProductSerializer(serializers.ModelSerializer):
                   'parent',
                   'description',
                   'qte_stock',
+                  'weight',
                   'principal_image',
                   'price',
                   'promo_price',
@@ -110,6 +112,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
                   'images',
                   'description',
                   'qte_stock',
+                  'weight',
                   'principal_image',
                   'is_variant',
                   'price',
@@ -134,6 +137,7 @@ class ProductSerializer(serializers.ModelSerializer):
                   'variant_value',
                   'parent',
                   'images',
+                  'weight',
                   'variant_type',
                   'variants',
                   'label',

@@ -30,6 +30,8 @@ class Product(models.Model):
     label = models.CharField(max_length=200)
     description = models.TextField()
     category_string = models.TextField()
+    #weight in gram
+    weight = models.DecimalField(max_digits=15, decimal_places=2, default=300)
     qte_stock = models.IntegerField(default=100)
     principal_image = models.ImageField(upload_to='products', null=True)
     is_variant = models.BooleanField(default=False)

@@ -27,6 +27,7 @@ class ProductViewset(ModelViewSet):
             label = data["label"],
             description = data["description"],
             qte_stock = data["qte_stock"],
+            weight = data["weight"],
             principal_image = data["principal_image"] if "principal_image" in data else None,
             is_variant = data["is_variant"] if "is_variant" in data else None,
             variant_value = data["variant_value"] if "variant_value" in data else None,
@@ -55,6 +56,8 @@ class ProductViewset(ModelViewSet):
             product.description = data["description"]
         if "qte_stock" in data:
             product.qte_stock = data["qte_stock"]
+        if "weight" in data:
+            product.weight = data["weight"]
         if "principal_image" in data:
             product.principal_image = data["principal_image"]
         if "price" in data:

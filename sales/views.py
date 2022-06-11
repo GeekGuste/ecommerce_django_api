@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from sales.models import OrderProduct
 from sales.models import Product
 from sales.models import Order
+from django.core.mail import send_mail, mail_admins
  
 from rest_framework.decorators import api_view
 
@@ -82,6 +83,28 @@ def confirm_payment(request):
             total += float(item['quantity']) * float(item['price'])
         order.total = total
         order.save()
+        htmlMessage = ('Bonjour ' + order.first_name + '<br/>' +
+            'Votre commande de ' + total + '€ sur hocheacreation.fr a été validée. Votre/vos produit(s) sera livré dans les prochains jours.' + '<br/>' +
+            '<br/>' +
+            'L\'équipe Hochea');
+        #Send email to hochea and client
+        send_mail(
+            subject='Votre commande a été validée',
+            message=htmlMessage,
+            html_message=htmlMessage,
+            from_email='no-reply@hochea.tincom.biz',
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+        htmlMessage = 'Bonjour, <br/>' + 'La commande #'+ order.id + 'vient d\'être effectuée sur le site hocheacreation.fr<br/>'
+        mail_admins(
+            subject='Une nouvelle commande a été effectué',
+            html_message=htmlMessage,
+            from_email='no-reply@hochea.tincom.biz',
+            recipient_list=[email],
+            fail_silently=False,
+        )
         return Response(status=status.HTTP_200_OK, data={'order_id': order.id})
     return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'Erreur de paiement, veuillez réessayer.'})
 
@@ -124,5 +147,5 @@ def save_order(request):
     order.total = total
     order.save()
     #Send email to hochea and client
-
+    
     return Response(status=status.HTTP_200_OK, data={'order': order.toJSON()})
