@@ -28,6 +28,7 @@ class Product(models.Model):
     parent = models.ForeignKey("Product", on_delete=models.CASCADE, null=True, related_name="variants")
     variant_type = models.ForeignKey(VariantType, on_delete=models.CASCADE, null=True)
     label = models.CharField(max_length=200)
+    mode_paiement = models.CharField(default="", max_length=200)
     description = models.TextField()
     category_string = models.TextField()
     #weight in gram

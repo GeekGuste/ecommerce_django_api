@@ -183,6 +183,7 @@ class OrderSerializer(serializers.ModelSerializer):
                   'order_date',
                   'total',
                   'country',
+                  'mode_paiement',
                   'zone',
                   'last_name',
                   'first_name',

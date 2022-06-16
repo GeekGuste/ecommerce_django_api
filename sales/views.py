@@ -62,6 +62,7 @@ def confirm_payment(request):
             delivery_charges = float(data['delivery_charges']),
             total = total,
             payment_date = date.today(),
+            mode_paiement = "carte bancaire",
             user = request.user
         )
         order.is_paid = True
@@ -110,7 +111,7 @@ def confirm_payment(request):
 
 @csrf_exempt
 @api_view(['POST'])
-def save_order(request):
+def save_paypal_order(request):
     data = request.data
     email = data['email']
     items = data['items']
@@ -137,6 +138,7 @@ def save_order(request):
             price = float(item['price']), 
             quantity=float(item['quantity']), 
             order = order,
+            mode_paiement = "Paypal",
             image_url = item['image']
         )
         orderProduct.save()

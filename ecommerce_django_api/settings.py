@@ -148,4 +148,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STRIPE_API_KEY =  'sk_test_51Kpr85DP9ndu4EFOTqCLn00O0N9U5V5FLyval6cPXhilZxUWnop4ujWv7JmNsxqcFEGwrScGPxuJCDhuk6LIp0QJ00e8oSFWOl'
 
-ADMINS = [('Auguste', 'manouauguste7@gmail.com'), ('Tata Roxane', 'hocheacreation@gmail.com')]
+ADMINS = [('Auguste', 'manouauguste7@gmail.com'), ('Tata Roxane', ' hocheacreation@gmail.com')]
