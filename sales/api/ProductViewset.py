@@ -29,7 +29,7 @@ class ProductViewset(ModelViewSet):
             qte_stock = data["qte_stock"],
             weight = data["weight"],
             principal_image = data["principal_image"] if "principal_image" in data else None,
-            is_variant = data["is_variant"] if "is_variant" in data else None,
+            is_variant = data["is_variant"] if "is_variant" in data else False,
             variant_value = data["variant_value"] if "variant_value" in data else None,
             parent = Product.objects.get(pk=data["parent"]) if "parent" in data else None,
             price = data["price"],

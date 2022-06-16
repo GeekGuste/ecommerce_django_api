@@ -28,7 +28,6 @@ class Product(models.Model):
     parent = models.ForeignKey("Product", on_delete=models.CASCADE, null=True, related_name="variants")
     variant_type = models.ForeignKey(VariantType, on_delete=models.CASCADE, null=True)
     label = models.CharField(max_length=200)
-    mode_paiement = models.CharField(default="", max_length=200)
     description = models.TextField()
     category_string = models.TextField()
     #weight in gram
@@ -75,6 +74,7 @@ class DeliveryAddress(models.Model):
 class Order(models.Model):
     order_date = models.DateTimeField(auto_now=True)
     total = models.DecimalField(max_digits=15, decimal_places=2)
+    mode_paiement = models.CharField(default="", max_length=200)
     country = models.CharField(max_length=100)
     zone = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
