@@ -31,7 +31,7 @@ def create_payment(request):
     payment_intent = stripe.PaymentIntent.create(
         amount=int(total * 100), 
         currency='eur', 
-        payment_method_types=['card'],
+        payment_method_types=['card', 'klarna'],
         receipt_email=email,
     )
     return Response(status=status.HTTP_200_OK, data={'payment_intent': payment_intent})
@@ -85,7 +85,7 @@ def confirm_payment(request):
         order.total = total
         order.save()
         htmlMessage = ('Bonjour ' + order.first_name + '<br/>' +
-            'Votre commande de ' + total + '€ sur hocheacreation.fr a été validée. Votre/vos produit(s) sera livré dans les prochains jours.' + '<br/>' +
+            'Votre commande de ' + str(total) + '€ sur hocheacreation.fr a été validée. Votre/vos produit(s) sera livré dans les prochains jours.' + '<br/>' +
             '<br/>' +
             'L\'équipe Hochea');
         #Send email to hochea and client
@@ -95,16 +95,15 @@ def confirm_payment(request):
             html_message=htmlMessage,
             from_email='no-reply@hochea.tincom.biz',
             recipient_list=[email],
-            fail_silently=False,
+            fail_silently=True,
         )
 
-        htmlMessage = 'Bonjour, <br/>' + 'La commande #'+ order.id + 'vient d\'être effectuée sur le site hocheacreation.fr<br/>'
+        htmlMessage = 'Bonjour, <br/>' + 'La commande #'+str(order.id) + 'vient d\'être effectuée sur le site hocheacreation.fr<br/>'
         mail_admins(
-            subject='Une nouvelle commande a été effectué',
+            subject='Une nouvelle commande a été effectuée',
             html_message=htmlMessage,
-            from_email='no-reply@hochea.tincom.biz',
-            recipient_list=[email],
-            fail_silently=False,
+            message=htmlMessage,
+            fail_silently=True,
         )
         return Response(status=status.HTTP_200_OK, data={'order_id': order.id})
     return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'Erreur de paiement, veuillez réessayer.'})
@@ -127,6 +126,8 @@ def save_paypal_order(request):
         town = data['town'],
         delivery_charges = float(data['delivery_charges']),
         total = total,
+        mode_paiement = "Paypal",
+        is_paid = True,
         user = request.user
     )
     order.save()
@@ -138,7 +139,6 @@ def save_paypal_order(request):
             price = float(item['price']), 
             quantity=float(item['quantity']), 
             order = order,
-            mode_paiement = "Paypal",
             image_url = item['image']
         )
         orderProduct.save()
@@ -150,4 +150,4 @@ def save_paypal_order(request):
     order.save()
     #Send email to hochea and client
     
-    return Response(status=status.HTTP_200_OK, data={'order': order.toJSON()})
+    return Response(status=status.HTTP_200_OK, data={'order_id': order.id})

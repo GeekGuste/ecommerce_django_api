@@ -64,10 +64,12 @@ class ProductViewset(ModelViewSet):
             product.price = data["price"]
         if "promo_price" in data:
             product.promo_price = data["promo_price"]
+        if "variant_value" in data:
+            product.variant_value = data["variant_value"]
         if "variant_type" in data:
             variantType = VariantType.objects.get(pk=data["variant_type"]) if data["variant_type"] is not None else None
             product.variant_type = variantType
-            product.save()
+        product.save()
         if "categories" in data:
             #clear categories to update later
             product.categories.clear()
