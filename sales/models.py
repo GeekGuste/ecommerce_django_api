@@ -1,4 +1,5 @@
 import datetime
+from email import message
 import json
 from unicodedata import category
 from django.db import models
@@ -101,3 +102,8 @@ class OrderProduct(models.Model):
     quantity = models.IntegerField(default=1)
     image_url = models.CharField(max_length=255)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orderProducts")
+
+class Contact(models.Model):
+    name = models.CharField(max_length=200)
+    email = models.EmailField()
+    message = models.TextField()

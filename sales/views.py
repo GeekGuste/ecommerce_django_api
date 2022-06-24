@@ -1,9 +1,12 @@
 from datetime import date
+import email
+from email import message
 from django.shortcuts import render
 from django.shortcuts import render
 from importlib_metadata import metadata
 from rest_framework import status
 from rest_framework.response import Response
+from sales.models import Contact
 from sales.models import OrderProduct
 from sales.models import Product
 from sales.models import Order
@@ -151,3 +154,29 @@ def save_paypal_order(request):
     #Send email to hochea and client
     
     return Response(status=status.HTTP_200_OK, data={'order_id': order.id})
+
+@csrf_exempt
+@api_view(['POST'])
+def contact(request):
+    data = request.data
+    contact = Contact(
+        email = data['email'],
+        name = data['name'],
+        message = data['message']
+    )
+    contact.save()
+
+    htmlMessage = ('Bonjour, <br/>' + 
+    'Le client ' + 
+    contact.name + "("+ contact.email +")" + 
+    ' a envoyé le message ci dessous depuis le formulaire de contact<br/><br/><br/>' +
+    contact.message)
+
+    mail_admins(
+        subject='Message reçu depuis le formulaire de contact hochea',
+        html_message=htmlMessage,
+        message=htmlMessage,
+        fail_silently=True,
+    )
+
+    return Response(status=status.HTTP_200_OK, data={'contact_id': contact.id})
