@@ -44,11 +44,17 @@ class CategorySerializer(serializers.ModelSerializer):
                   'label',
                   'image',
                   'enfants',
+                  'has_at_least_one_product',
                   'is_active',
                   'parent')
     def get_parent(self, instance):
         if instance.parent is not None:
             return CategorySerializer(instance.parent).data
+        else:
+            return None
+    def get_enfants(self, instance):
+        if instance.enfants is not None:
+            return CategorySerializer(instance.enfants.filter(has_at_least_one_product=True)).data
         else:
             return None
 
@@ -64,7 +70,7 @@ class CategoryTreeSerializer(serializers.ModelSerializer):
                   'enfants')
     
     def get_enfants(self, instance):
-        queryset = instance.enfants.all()
+        queryset = instance.enfants.filter(has_at_least_one_product = True).all()
         return CategoryTreeSerializer(queryset, many=True).data
 
 

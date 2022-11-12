@@ -87,7 +87,7 @@ class ProductViewset(ModelViewSet):
         if category_id is not None:
             #queryset = queryset.filter(category__id=category_id)
             category = Category.objects.get(pk=category_id)
-            queryset = queryset.filter(category_string__contains=category.label)
+            queryset = queryset.filter(category_string__icontains=category.label)
         is_variant = self.request.GET.get('is_variant')
         if is_variant is not None:
             queryset = queryset.filter(is_variant=is_variant)

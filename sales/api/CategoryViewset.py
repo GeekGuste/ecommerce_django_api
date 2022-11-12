@@ -30,6 +30,7 @@ class CategoryViewset(ModelViewSet):
     
     @action(detail=False, methods=['get'], url_path="tree")
     def tree(self, request):
-        categories = Category.objects.filter(parent__isnull=True)
+        categories = Category.objects.filter(parent__isnull=True).filter(has_at_least_one_product = True)
+        #categories = [cat for cat in categories if cat.get().hasProduct()]
         serializer = self.get_serializer(categories, many=True)
         return Response(serializer.data)

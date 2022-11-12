@@ -1,5 +1,6 @@
 import datetime
 from email import message
+from email.policy import default
 import json
 from unicodedata import category
 from django.db import models
@@ -10,16 +11,25 @@ from users.models import User
 class Category(models.Model):
     label = models.CharField(max_length=200)
     is_active = models.BooleanField()
+    has_at_least_one_product = models.BooleanField(default=False)
     image = models.ImageField(upload_to='categories', null=True)
     #on met category entre côtes et ça référence toujours la catégorie
     parent = models.ForeignKey("Category", on_delete=models.CASCADE, null=True, related_name="enfants")
+
+    def setHasProduct(self):
+        self.has_at_least_one_product = True
+        self.save()
+        if self.parent != None:
+            self.parent.setHasProduct()
+
+
     def getTreeNames(self):
         if self.parent is None:
             return self.label
         parent = Category.objects.get(pk=self.parent.id)
         return parent.getTreeNames() + " " + self.label
-            
-        
+
+
 
 class VariantType(models.Model):
     label = models.CharField(max_length=100)
@@ -45,6 +55,7 @@ class Product(models.Model):
         self.category_string = ""
         if self.id:
             for category in self.categories.all():
+                category.setHasProduct()
                 self.category_string += (category.getTreeNames() + " ")
         super(Product, self).save(*args, **kwargs)
 
