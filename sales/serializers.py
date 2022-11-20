@@ -202,6 +202,7 @@ class OrderSerializer(serializers.ModelSerializer):
                   'payment_date',
                   'delivery_charges',
                   'is_delivered',
+                  'delivery_details',
                   'user',
                   'is_paid',
                   'orderProducts'
