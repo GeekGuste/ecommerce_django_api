@@ -7,21 +7,23 @@ from django.db import models
 from numpy import product
 from users.models import User
 
+
 # Create your models here.
 class Category(models.Model):
     label = models.CharField(max_length=200)
     is_active = models.BooleanField()
     has_at_least_one_product = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='categories', null=True)
-    #on met category entre côtes et ça référence toujours la catégorie
-    parent = models.ForeignKey("Category", on_delete=models.CASCADE, null=True, related_name="enfants")
+    image = models.ImageField(upload_to="categories", null=True)
+    # on met category entre côtes et ça référence toujours la catégorie
+    parent = models.ForeignKey(
+        "Category", on_delete=models.CASCADE, null=True, related_name="enfants"
+    )
 
     def setHasProduct(self):
         self.has_at_least_one_product = True
         self.save()
         if self.parent != None:
             self.parent.setHasProduct()
-
 
     def getTreeNames(self):
         if self.parent is None:
@@ -30,49 +32,63 @@ class Category(models.Model):
         return parent.getTreeNames() + " " + self.label
 
 
-
 class VariantType(models.Model):
     label = models.CharField(max_length=100)
 
+
 class Product(models.Model):
     categories = models.ManyToManyField(Category)
-    parent = models.ForeignKey("Product", on_delete=models.CASCADE, null=True, related_name="variants")
+    parent = models.ForeignKey(
+        "Product", on_delete=models.CASCADE, null=True, related_name="variants"
+    )
     variant_type = models.ForeignKey(VariantType, on_delete=models.CASCADE, null=True)
     label = models.CharField(max_length=200)
     description = models.TextField()
     category_string = models.TextField()
-    #weight in gram
+    # weight in gram
     weight = models.DecimalField(max_digits=15, decimal_places=2, default=300)
     qte_stock = models.IntegerField(default=100)
-    principal_image = models.ImageField(upload_to='products', null=True)
+    principal_image = models.ImageField(upload_to="products", null=True)
     is_variant = models.BooleanField(default=False)
     variant_value = models.CharField(max_length=200, blank=True, null=True)
+    with_size = models.BooleanField(default=False)
+    size = models.CharField(max_length=50, default="")
     price = models.CharField(max_length=50)
     promo_price = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=True)
     pub_date = models.DateTimeField(auto_now=True)
+
     def save(self, *args, **kwargs):
         self.category_string = ""
         if self.id:
             for category in self.categories.all():
                 category.setHasProduct()
-                self.category_string += (category.getTreeNames() + " ")
+                self.category_string += category.getTreeNames() + " "
         super(Product, self).save(*args, **kwargs)
 
+
 class Image(models.Model):
-    photo = models.ImageField(upload_to = 'products')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
+    photo = models.ImageField(upload_to="products")
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="images"
+    )
+
 
 class Video(models.Model):
-    file = models.FileField(upload_to='products_video')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="videos")
+    file = models.FileField(upload_to="products_video")
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="videos"
+    )
+
 
 class Tags(models.Model):
     label = models.CharField(max_length=100)
 
+
 class DeliveryZoneInfo(models.Model):
     zone = models.CharField(max_length=100)
     delivery_charges = models.DecimalField(max_digits=15, decimal_places=2)
+
 
 class DeliveryAddress(models.Model):
     country = models.CharField(max_length=100)
@@ -82,6 +98,7 @@ class DeliveryAddress(models.Model):
     postal_code = models.CharField(max_length=20)
     additional_informations = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
 
 class Order(models.Model):
     order_date = models.DateTimeField(auto_now=True)
@@ -103,9 +120,10 @@ class Order(models.Model):
     is_paid = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
     delivery_details = models.TextField(default="")
+
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
 
 class OrderProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -113,7 +131,10 @@ class OrderProduct(models.Model):
     price = models.FloatField()
     quantity = models.IntegerField(default=1)
     image_url = models.CharField(max_length=255)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orderProducts")
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="orderProducts"
+    )
+
 
 class Contact(models.Model):
     name = models.CharField(max_length=200)
