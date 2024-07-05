@@ -87,10 +87,10 @@ WSGI_APPLICATION = "ecommerce_django_api.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "mysql.connector.django",
-        "NAME": "hochea",
-        "USER": "root",
-        "PASSWORD": "",
-        "HOST": "localhost",  # Or an IP Address that your DB is hosted on
+        "NAME": os.getenv('DATABASE_NAME'),
+        "USER": os.getenv('DATABASE_USER'),
+        "PASSWORD": os.getenv('DATABASE_PASSWORD'),
+        "HOST": os.getenv('DATABASE_HOST'),  # Or an IP Address that your DB is hosted on
         "PORT": "3306",
     }
 }
